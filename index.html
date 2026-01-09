@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sound Trigger</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+      background-color: #f0f0f0;
+    }
+    .status {
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px auto;
+      max-width: 400px;
+    }
+    .error { background-color: #ffecec; border: 1px solid #f5c6cb; }
+    .success { background-color: #e2f0d9; border: 1px solid #c3e6cb; }
+  </style>
+</head>
+<body>
+  <h1>Sound Tag Player</h1>
+  
+  <div id="status" class="status"></div>
+
+  <!-- Заглушка для аудио (пока нет файла) -->
+  <audio id="player"></audio>
+
+  <script>
+    const player = document.getElementById('player');
+    const statusDiv = document.getElementById('status');
+
+    // ФУНКЦИЯ: задать путь к аудио и запустить
+    function playSound(audioUrl) {
+      try {
+        // Устанавливаем источник звука
+        player.src = audioUrl;
+        
+        // Максимальная громкость
+        player.volume = 1.0;
+        
+        // Пытаемся воспроизвести
+        player.play()
+          .then(() => {
+            statusDiv.className = 'status success';
+            statusDialog.textContent = 'Звук воспроизводится! 🔊';
+          })
+          .catch(error => {
+            statusDiv.className = 'status error';
+            statusDiv.textContent = `Ошибка воспроизведения: ${error.message}`;
+          });
+      } catch (err) {
+        statusDiv.className = 'status error';
+        statusDiv.textContent = `Ошибка: ${err.message}`;
+      }
+    }
+
+    // Пример вызова (раскомментируйте и укажите свой путь)
+    // playSound('path/to/your/sound.mp3');
+
+    // Информационное сообщение
+    statusDiv.className = 'status';
+    statusDiv.textContent = 'Готов к воспроизведению. Укажите путь к аудиофайлу в коде.';
+  </script>
+</body>
+</html>

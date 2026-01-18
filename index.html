@@ -1,20 +1,18 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>SOUNDTAG</title>
+    <title>MAX</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-
-    <!-- Фавиконы -->
-    <link rel="icon" type="image/png" sizes="32x32" href="https://macan-lgtm.github.io/NFC/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="https://macan-lgtm.github.io/NFC/favicon-16x16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="https://macan-lgtm.github.io/NFC/apple-touch-icon.png">
-
-    <!-- Preload ресурсов -->
-    <link rel="preload" as="image" href="https://macan-lgtm.github.io/NFC/a5f6b6/avatar.png?v=1765350796">
-    <link rel="preload" as="audio" href="https://macan-lgtm.github.io/NFC/a5f6b6/audio.mp3?v=1765350796">
-    <link rel="preload" as="image" href="https://macan-lgtm.github.io/NFC/assets/explosion.gif">
-
+    <link rel="icon" type="https://macan-lgtm.github.io/NFC/favicon-32x32.png">
+    <link rel="icon" type="https://macan-lgtm.github.io/NFC/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+    
+    <link rel="preload" as="image" href="https://macan-lgtm.github.io/NFC/avatar.png?v=1765350796">
+    <link rel="preload" as="audio" href="https://macan-lgtm.github.io/NFC/audio.mp3?v=1765350796">
+    <link rel="preload" as="image" href="https://macan-lgtm.github.io/NFC/explosion.gif">
+    
     <style>
         * {
             -webkit-user-select: none;
@@ -104,7 +102,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: url('https://macan-lgtm.github.io/NFC/assets/explosion.gif') center/cover no-repeat;
+            background: url('/assets/explosion.gif') center/cover no-repeat;
             z-index: 10;
             pointer-events: none;
             opacity: 0;
@@ -136,102 +134,139 @@
     </style>
 </head>
 <body oncontextmenu="return false;">
-    <img id="bg" src="https://macan-lgtm.github.io/NFC/a5f6b6/avatar.png?v=1765350796" alt="" draggable="false" decoding="async" loading="lazy">
-    <img id="pic" src="https://macan-lgtm.github.io/NFC/a5f6b6/avatar.png?v=1765350796" alt="" draggable="false" decoding="async" loading="eager">
+    <img id="bg" src="/a5f6b6/avatar.png?v=1765350796" alt="" draggable="false" decoding="async" loading="lazy">
+    <img id="pic" src="/a5f6b6/avatar.png?v=1765350796" alt="" draggable="false" decoding="async" loading="eager">
     <button id="btn">🔊 ЗАГЛУШИТЬ</button>
-    <audio id="sound" src="https://macan-lgtm.github.io/NFC/a5f6b6/audio.mp3?v=1765350796" loop preload="none"></audio>
+    <audio id="sound" src="/a5f6b6/audio.mp3?v=1765350796" loop preload="none"></audio>
 
     <script>
         const sound = document.getElementById('sound');
         const btn = document.getElementById('btn');
         const pic = document.getElementById('pic');
-
+        
         const explosionsEnabled = true;
         let tapCount = 0;
         let firstInteraction = false;
+        
         let explosionPreloaded = false;
         let pendingExplosions = [];
-
+        
         function preloadExplosion() {
             if (explosionPreloaded) return;
+            
             const explosionPreloader = new Image();
             explosionPreloader.onload = function() {
                 explosionPreloaded = true;
+                
                 while (pendingExplosions.length > 0) {
                     showExplosion();
                     pendingExplosions.pop();
                 }
             };
-            explosionPreloader.src = 'https://macan-lgtm.github.io/NFC/assets/explosion.gif';
+            explosionPreloader.src = '/assets/explosion.gif';
         }
-
+        
         function showExplosion() {
             if (!explosionsEnabled) return;
+            
             const explosion = document.createElement('div');
             explosion.className = 'explosion';
             document.body.appendChild(explosion);
-            setTimeout(() => { if (explosion.parentNode) explosion.remove(); }, 2000);
+            
+            setTimeout(function() {
+                if (explosion.parentNode) {
+                    explosion.remove();
+                }
+            }, 2000);
         }
-
+        
         function queueExplosion() {
-            if (explosionPreloaded) showExplosion();
-            else {
+            if (explosionPreloaded) {
+                showExplosion();
+            } else {
                 pendingExplosions.push(true);
-                if (!document.querySelector('link[href="https://macan-lgtm.github.io/NFC/assets/explosion.gif"]')) {
+                
+                if (!document.querySelector('link[href="/assets/explosion.gif"]')) {
                     preloadExplosion();
                 }
             }
         }
-
-        function handleInteraction() {
+        
+        function handleInteraction(e) {
             if (!firstInteraction) {
                 btn.classList.add('visible');
                 btn.style.pointerEvents = 'auto';
                 firstInteraction = true;
             }
-            if (sound.paused) sound.play().catch(() => console.log("Autoplay blocked"));
+            
+            if (sound.paused) {
+                sound.play().catch(function(e) {
+                    console.log("Autoplay blocked");
+                });
+            }
+            
             tapCount++;
-            if (tapCount === 1 || tapCount % 5 === 0) queueExplosion();
+            if (tapCount === 1 || tapCount % 5 === 0) {
+                queueExplosion();
+            }
         }
-
+        
         function handleBtnClick(e) {
-            e.stopPropagation(); e.preventDefault();
+            e.stopPropagation();
+            e.preventDefault();
             window.open('https://t.me/+dj5Sr8rJbC01Mzdi', '_blank');
         }
+        
+        function startPress() {
+            pic.style.transform = 'scale(0.94)';
+        }
+        
+        function endPress() {
+            pic.style.transform = 'scale(1)';
+        }
 
-        function startPress() { pic.style.transform = 'scale(0.94)'; }
-        function endPress() { pic.style.transform = 'scale(1)'; }
-
-        if (explosionsEnabled) window.addEventListener('load', () => setTimeout(preloadExplosion, 100));
+        if (explosionsEnabled) {
+            window.addEventListener('load', function() {
+                setTimeout(preloadExplosion, 100);
+            });
+        }
 
         let lastTouchTime = 0;
-        const preventGhostTouch = e => {
+        const preventGhostTouch = (e) => {
             const now = Date.now();
-            if (now - lastTouchTime < 500) { e.preventDefault(); e.stopPropagation(); return false; }
+            if (now - lastTouchTime < 500) {
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+            }
             lastTouchTime = now;
         };
 
         const passiveOptions = { passive: true };
+        
         document.addEventListener('mousedown', startPress);
         document.addEventListener('mouseup', endPress);
         document.addEventListener('mouseleave', endPress);
         document.addEventListener('touchstart', startPress, passiveOptions);
         document.addEventListener('touchend', endPress, passiveOptions);
         document.addEventListener('touchcancel', endPress, passiveOptions);
-
+        
         document.addEventListener('click', handleInteraction);
         document.addEventListener('touchend', preventGhostTouch, passiveOptions);
         document.addEventListener('touchend', handleInteraction, passiveOptions);
         btn.addEventListener('click', handleBtnClick);
-
+        
         if (/android/i.test(navigator.userAgent)) {
             document.body.style.overflow = 'hidden';
             document.documentElement.style.overflow = 'hidden';
+            
             let lastTap = 0;
-            document.addEventListener('touchend', e => {
+            document.addEventListener('touchend', function(e) {
                 const currentTime = new Date().getTime();
                 const tapLength = currentTime - lastTap;
-                if (tapLength < 300 && tapLength > 0) e.preventDefault();
+                if (tapLength < 300 && tapLength > 0) {
+                    e.preventDefault();
+                }
                 lastTap = currentTime;
             }, passiveOptions);
         }
